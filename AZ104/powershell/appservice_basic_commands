@@ -1,0 +1,28 @@
+New-AzResourceGroupDeployment -ResourceGroupName az-104-study -TemplateFile ./appserviceArm.json -TemplateParameterFile ./appserviceParams.json
+
+New-AzAppServicePlan -Name "servicePlanViaPS" -Location "East US" -ResourceGroupName "az-104-study" -Tier "Free" -Linux
+
+New-AzWebApp -ResourceGroupName "az-104-study" -Location "East US" -AppServicePlan "servicePlanViaPS" $sitename=fndjvfdjfdjvndfjvdf
+
+$site=Get-AzResource -ResourceGroupName az-104-study -ResourceType Microsoft.Web/sites -Name $sitename
+
+$properties=@{publicNetworkAccess="Enabled"}
+
+Set-AzResource -Properties $properties -ResourceGroupName az-104-study -ResourceType Microsoft.Web/sites -ResourceName $site.name -ApiVersion 2024-04-01
+
+$val=Get-AzResource -ResourceType Microsoft.Web/sites/sourcecontrols -ResourceGroupName "az-104-study" -Name "linuxflaskapp-fdsfijhdsfdhsfjdsf232huh/web" -ApiVersion 2015-08-01
+
+echo $val.properties 
+
+
+$obj=@{isManualIntegration="true";repoUrl="https://github.com/dwayneh01/flask.git";branch="main"}
+# deploy connect github public to a slot 
+Set-AzResource -PropertyObject $obj -ResourceGroupName cloud-shell-storage-northeurope -ResourceType Microsoft.Web/sites/slots/sourcecontrols -ResourceName appservice1zcc23nr3jrnfdsfds/Prod/web -ApiVersion 2024-04-01
+
+# used az webapp config set --resource-group <resource-group-name> --name <app-name> --linux-fx-version "PYTHON|3.11" to update fx version
+
+$test=Get-AzResource -ResourceGroupName cloud-shell-storage-northeurope -Name appservice1zcc23nr3jrnfdsfds -ResourceType Microsoft.Web/sites
+echo $test.Properties.siteConfig.linuxFxVersion
+
+
+Switch-AzWebAppSlot -SourceSlotName "Prod" -DestinationSlotName "Production" -ResourceGroupName cloud-shell-storage-northeurope -Name "appservice1zcc23nr3jrnfdsfds" -Debug
