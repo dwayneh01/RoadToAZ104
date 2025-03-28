@@ -1,0 +1,8 @@
+New-AzResourceGroup -Name 'az-104-study' -Location 'eastus'
+$workload=New-AzContainerAppWorkloadProfileObject -Name "Consumption" -Type "Consumption"
+
+$env=New-AzContainerAppManagedEnv -Name 'CA-ENV-DEV' -ResourceGroupName az-104-study -Location eastus -WorkloadProfile $workload  
+$template=New-AzContainerAppTemplateObject -Name 'app-helloworld1' -Image 'mcr.microsoft.com/azuredocs/aci-helloworld:latest' -resourceCpu 0.75 -resourceMemory 1.5Gi
+
+$config=New-AzContainerAppConfigurationObject -IngressExternal $True -IngressTargetPort 80
+New-AzContainerApp -Location eastus -ResourceGroupName az-104-study -TemplateContainer $template -Configuration $config -EnvironmentId $env.id 

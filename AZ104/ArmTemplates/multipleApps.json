@@ -1,0 +1,65 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":"1.0.0.0",
+    "parameters":{},
+    "functions":[], 
+    "variables":{},
+    "resources":[
+        {
+            "name":"free_asp_multiapp",
+            "type":"Microsoft.Web/serverfarms",
+            "apiVersion": "2024-04-01",
+            "kind":"linux",
+            "location": "East US 2",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+ 
+            },
+            "sku":{
+                "name":"F1",
+                "size":"F1",
+                "family":"A",
+                "tier":"Free"  
+            }
+        },
+        {
+            "name": "[concat('app1-',uniqueString('free_asp_multiapp'))]",
+            "type":"Microsoft.Web/sites",
+            "apiVersion": "2024-04-01",
+            "kind": "app,linux", 
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', 'free_asp_multiapp')]"
+            ],
+            "properties":{
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'free_asp_multiapp')]",
+                "publicNetworkAccess": "Enabled",
+                "enabled": true,
+                "reserved": true,
+                "siteConfig":{
+                    "linuxFxVersion": "PYTHON|3.7",
+                    "pythonVersion":"3.7",
+                    "numberOfWorkers": 1,
+                    "appSettings":[
+                        {
+                            "name":"MY_CUSTOMVALUE", 
+                            "value":"customStringUsingArm"
+                        }
+                    ]
+                }
+            }
+            
+
+        }
+    ],
+    "outputs": {}
+}

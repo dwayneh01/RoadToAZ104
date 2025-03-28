@@ -1,0 +1,9 @@
+ $container = New-AzContainerInstanceObject -Name 'container-helloworld' -Image 'mcr.microsoft.com/azuredocs/aci-helloworld:latest' -RequestCpu 1 -RequestMemoryInGb 1.5 -Port @($port)
+ $container = New-AzContainerInstanceObject -Name 'container-helloworld' -Image 'mcr.microsoft.com/azuredocs/aci-helloworld:latest' -RequestCpu 1 -RequestMemoryInGb 1.5 -Port @($port)$container = New-AzContainerInstanceObject -Name 'container-helloworld' -Image 'mcr.microsoft.com/azuredocs/aci-helloworld:latest' -RequestCpu 1 -RequestMemoryInGb 1.5 -Port @($port)                           
+ New-AzContainerGroup -Name 'containergroup-helloworld1' -Location swedencentral -IPAddressDnsNameLabel 'helloworld1' -IPAddressType 'Public' -Container $container -ResourceGroupName az-104-study2 -OSType Linux
+ $port=New-AzContainerInstancePortObject -Port 8000 -Protocol TCP 
+
+ New-AzContainerGroup -Name 'containergroup-helloworld1' -Location swedencentral -IPAddressDnsNameLabel 'helloworld1' -IPAddressType 'Public' -Container $container -ResourceGroupName az-104-study2 -OSType LinuxstanceObject -Name 'container-helloworld2' -Image 'mcr.microsoft.com/azuredocs/aci-helloworld:latest' -RequestCpu 1 -RequestMemoryIn
+Gb 1.5 -Port @($port80)
+
+$port80=New-AzContainerInstancePortObject -Port 80 -Protocol TCP
