@@ -1,9 +1,17 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion":"1.0.0.0",
-    "parameters":{},
+    "parameters":{
+        "RequiredAppNames":{
+            "type": "array",
+            "defaultValue": ["app1","app2","app3"]
+        }
+    },
     "functions":[], 
-    "variables":{},
+    "variables":{
+        "appNames":"[parameters('RequiredAppNames')]",
+        "uniqueHash":"[uniqueString('free_asp_multiapp')]"
+    },
     "resources":[
         {
             "name":"free_asp_multiapp",
@@ -32,7 +40,11 @@
             }
         },
         {
-            "name": "[concat('app1-',uniqueString('free_asp_multiapp'))]",
+            "copy":{
+                "name":"multiapploop",
+                "count": "[length(variables('appNames'))]"
+            },
+            "name": "[concat(variables('appNames')[copyIndex()],variables('uniqueHash'))]",
             "type":"Microsoft.Web/sites",
             "apiVersion": "2024-04-01",
             "kind": "app,linux", 
@@ -61,5 +73,13 @@
 
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "appUrls": {
+            "type": "array",
+            "copy": {
+                "count": "[length(variables('appNames'))]",
+                "input": "[reference(resourceId('Microsoft.Web/sites', concat(variables('appNames')[copyIndex()], variables('uniqueHash')))).defaultHostName]"
+            }
+        }
+    }
 }
